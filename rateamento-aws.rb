@@ -1,10 +1,11 @@
 require 'csv'
 
 if ARGV.size < 1
-  puts "Usage: rateamento-aws aws-cost-allocation-file.csv [tag-name]"
+  puts "Usage: rateamento-aws aws-cost-allocation-file.csv [total-in-local-currency] [tag-name]"
 end
 
-tag_name = ARGV[1] || 'user:produto'
+total_local = ARGV[1].to_f if ARGV[1]
+tag_name = ARGV[2] || 'user:produto'
 
 costs_by_product = Hash.new(0)
 others_costs = Hash.new(0)
@@ -26,14 +27,22 @@ CSV.foreach(ARGV[0], col_sep: ',', encoding: 'utf-8', headers: true, skip_lines:
   end
 end
 
-costs_by_product.each do |key, value|
-  puts "#{key}: #{value.round(2)}"
+total_local = total_cost unless total_local
+
+format_value = -> (value) do
+  "#{value.round(2)} -> #{(total_local * value/total_cost).round(2)}"
 end
-puts "Others costs: #{total_others_costs.round(2)}"
-puts "Total: #{total_cost.round(2)}"
+
+puts "Exchange rate: #{(total_local/total_cost).round(3)}"
+
+costs_by_product.each do |key, value|
+  puts "#{key}: #{format_value.(value)}"
+end
+puts "Others costs: #{format_value.(total_others_costs)}"
+puts "Total: #{format_value.(total_cost)}"
 
 puts
 puts 'Others cost detail:'
 others_costs.each do |key, value|
-  puts "#{key}: #{value.round(2)}"
+  puts "#{key}: #{format_value.(value)}"
 end
