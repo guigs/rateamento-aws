@@ -18,6 +18,8 @@ CSV.foreach(ARGV[0], col_sep: ',', encoding: 'utf-8', headers: true, skip_lines:
     if row_total_cost > 0
       if row[tag_name]
         costs_by_product[row[tag_name]] += row_total_cost
+      elsif row['UsageType'] =~ /HeavyUsage/
+        costs_by_product[row['UsageType']] += row_total_cost
       else
         others_costs[row['UsageType']] += row_total_cost
         total_others_costs += row_total_cost
