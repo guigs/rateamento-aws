@@ -2,6 +2,7 @@ require 'csv'
 
 if ARGV.size < 1
   puts "Usage: rateamento-aws aws-cost-allocation-file.csv [total-in-local-currency] [tag-name]"
+  exit
 end
 
 total_local = ARGV[1].to_f if ARGV[1]
