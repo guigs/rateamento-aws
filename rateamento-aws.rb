@@ -13,7 +13,7 @@ others_costs = Hash.new(0)
 total_others_costs = 0.0
 total_cost = 0.0
 
-CSV.foreach(ARGV[0], col_sep: ',', encoding: 'utf-8', headers: true, skip_lines: /\ADon't see your tags/) do |row|
+CSV.foreach(ARGV[0], col_sep: ',', encoding: 'utf-8', headers: true, skip_lines: /Don't see your tags/) do |row|
   if row['RecordType'] == 'PayerLineItem'
     row_total_cost = row['TotalCost'].to_f
     if row_total_cost > 0
